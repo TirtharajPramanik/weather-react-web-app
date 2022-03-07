@@ -19,11 +19,11 @@ const Weather = (props) => {
 					setCoords({});
 				}
 			);
-			const data = await props.fetchReport();
+			const data = await props.fetchReport(coords.lat, coords.lon);
 			setReport(data);
 		}
 		setData();
-	}, [props]);
+	}, [props, coords]);
 
 	return (
 		<div className='container'>
