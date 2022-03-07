@@ -2,78 +2,28 @@ import React from 'react';
 import './weather.scss';
 import { BsCloudSun } from 'react-icons/bs';
 
-const fetchReport = async () => {
-	try {
-		const res = await fetch(
-			'http://api.openweathermap.org/data/2.5/weather?q=kolkata&units=metric&appid=8c8b989f3dd26e538104b1f9ae47ca85'
-		);
-		const repo = await res.json();
-		const info = {
-			temp: repo.main.temp,
-			wind_dir: repo.wind.deg,
-			wind_speed: repo.wind.speed,
-			humidity: repo.main.humidity,
-			desc: repo.weather.description,
-			icon: repo.weather.icon,
-			local_time: repo.dt,
-			timezone: repo.timezone,
-			lat: repo.coord.lat,
-			lon: repo.coord.lon,
-			region: repo.name,
-			country: repo.sys.country,
-		};
-		const date = new Date(info.local_time);
-		let zero = '';
-		if (toString(date.getMinutes()).length < 2) {
-			zero = 0;
-		} else {
-			zero = '';
-		}
-		info.local_date = `${date.getDate()}-${date.getMonth()}-${date.getFullYear()}`;
-		info.local_time = `${date.getHours()}:${zero}${date.getMinutes()}`;
-		info.local_day = `${getDay(date.getDay())}, `;
-		info.is_day = `${info.icon}`.endsWith('d');
-		info.utc_offset = date.getTimezoneOffset();
-		return info;
-	} catch (err) {
-		console.log(err);
-		return {};
-	}
-};
-
-const getDay = (num) => {
-	switch (num) {
-		case 0:
-			return 'Sun';
-		case 1:
-			return 'Mon';
-		case 2:
-			return 'Tue';
-		case 3:
-			return 'Wed';
-		case 4:
-			return 'Thirs';
-		case 5:
-			return 'Fri';
-		case 6:
-			return 'Sat';
-
-		default:
-			return 'Mon';
-	}
-};
-
-const Weather = () => {
+const Weather = (props) => {
 	const [report, setReport] = React.useState({});
+	const [coords, setCoords] = React.useState({});
 
 	React.useEffect(() => {
 		async function setData() {
-			const data = await fetchReport();
-			console.log(data);
+			navigator.geolocation.getCurrentPosition(
+				(pos) => {
+					const lat = Math.round(pos.coords.latitude);
+					const lon = Math.round(pos.coords.longitude);
+					setCoords({ lat, lon });
+				},
+				(err) => {
+					console.log(err);
+					setCoords({});
+				}
+			);
+			const data = await props.fetchReport();
 			setReport(data);
 		}
 		setData();
-	}, []);
+	}, [props]);
 
 	return (
 		<div className='container'>

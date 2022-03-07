@@ -1,3 +1,4 @@
+$bg-wd-xl: 65%;
 $bg-wd-lg: 75%;
 $bg-wd-md: 86%;
 $bg-wd-sm: 90%;
@@ -65,10 +66,18 @@ $bg-wd-sm: 90%;
 	.rectangle {
 		max-width: $bg-wd-lg;
 	}
+
+	.info {
+		max-width: $bg-wd-md;
+	}
 }
 
 @media screen and (min-width: 1080px) {
 	.w-icon {
 		font-size: 8rem;
+	}
+
+	.info {
+		max-width: $bg-wd-xl;
 	}
 }
